@@ -1,15 +1,14 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class PlayerInput : MonoBehaviour
 {
     public float movementSpeed = 3;
+    public Camera playerCamera;
     
     private CharacterController m_controller;
     private Vector3 m_movementInput;
-
-    // Start is called before the first frame update
+    
     private void Awake() {
         m_controller = GetComponent<CharacterController>();
     }
@@ -28,6 +27,6 @@ public class PlayerInput : MonoBehaviour
     {
         Vector2 newInputMovement = value.Get<Vector2>();
         m_movementInput = new Vector3(newInputMovement.x, 0.0f, newInputMovement.y);
-        m_movementInput = Quaternion.Euler(0.0f, Camera.main.transform.eulerAngles.y, 0.0f) * m_movementInput;
+        m_movementInput = Quaternion.Euler(0.0f, playerCamera.transform.eulerAngles.y, 0.0f) * m_movementInput;
     }
 }
