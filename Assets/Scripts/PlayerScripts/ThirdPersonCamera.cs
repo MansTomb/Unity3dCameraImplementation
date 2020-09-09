@@ -11,7 +11,7 @@ public class ThirdPersonCamera : MonoBehaviour
     public float cameraSpeed = 3f;
     public float distance = 3f;
 
-    private Vector3 m_currentCoordinates = Vector3.zero;
+    private Vector3 m_inputCoordinates = Vector3.zero;
     private Vector3 m_offset;
 
     private float m_mouseX;
@@ -32,8 +32,8 @@ public class ThirdPersonCamera : MonoBehaviour
 
     private void CameraControl()
     {
-        m_mouseX += m_currentCoordinates.x * cameraSpeed;
-        m_mouseY -= m_currentCoordinates.y * cameraSpeed;
+        m_mouseX += m_inputCoordinates.x * cameraSpeed;
+        m_mouseY -= m_inputCoordinates.y * cameraSpeed;
         m_mouseY = Mathf.Clamp(m_mouseY, -50, 35);
         RaycastHit hit;
         
@@ -54,6 +54,6 @@ public class ThirdPersonCamera : MonoBehaviour
     private void OnCamera(InputValue value)
     {
         Vector2 vectorValue = value.Get<Vector2>();
-        m_currentCoordinates = new Vector3(vectorValue.x, vectorValue.y, 0);
+        m_inputCoordinates = new Vector3(vectorValue.x, vectorValue.y, 0);
     }
 }
