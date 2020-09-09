@@ -419,13 +419,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.13886425, y: 0.0052940566, z: -0.00031723312, w: 0.9902973}
-  m_LocalPosition: {x: 0.014, y: 1.247, z: -3.035}
+  m_LocalRotation: {x: 0.13052616, y: 0, z: 0, w: 0.9914449}
+  m_LocalPosition: {x: 0, y: 1, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 522609025}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 15.964, y: 0.62, z: 0.05}
+  m_LocalEulerAnglesHint: {x: 15, y: 0, z: 0}
 --- !u!114 &963194229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -439,7 +439,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 522609025}
-  cameraSpeed: 3
+  cameraSpeed: 50
 --- !u!1 &1079006368
 GameObject:
   m_ObjectHideFlags: 0
@@ -533,7 +533,6 @@ GameObject:
   - component: {fileID: 1510942964}
   - component: {fileID: 1510942967}
   - component: {fileID: 1510942966}
-  - component: {fileID: 1510942965}
   m_Layer: 0
   m_Name: Face
   m_TagString: Untagged
@@ -555,19 +554,6 @@ Transform:
   m_Father: {fileID: 1079006369}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1510942965
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1510942963}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1510942966
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -765,7 +751,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 14.721, y: 6.875, z: 7.779}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1942487899
 GameObject:
   m_ObjectHideFlags: 0

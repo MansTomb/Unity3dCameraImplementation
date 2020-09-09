@@ -1,6 +1,7 @@
 using System;
 using System.Numerics;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Quaternion = UnityEngine.Quaternion;
@@ -13,10 +14,17 @@ public class ThirdPersonCamera : MonoBehaviour
     public float cameraSpeed = 3;
 
     private Vector3 m_currentCoordinates = Vector3.zero;
+    private Vector3 m_offset;
     private float m_distance = 1.0f;
+
+    private float m_offsetX = 0f;
+    private float m_offsetY = 1f;
+    private float m_offsetZ = -3f;
 
     private void Awake()
     {
+        m_offset = new Vector3(player.position.x + m_offsetX, player.position.y + m_offsetY, player.position.z + m_offsetZ);
+        transform.rotation = Quaternion.Euler(15, 0, 0);
         m_distance = Vector3.Distance(transform.parent.position, transform.position);
     }
 
@@ -31,31 +39,26 @@ public class ThirdPersonCamera : MonoBehaviour
         {
             RaycastHit hit;
             
-            Debug.Log($"{m_distance}");
             Debug.DrawRay(transform.parent.position, transform.localPosition.normalized, Color.blue);
-            if (Physics.Raycast(transform.parent.position, transform.localPosition.normalized, out hit, m_distance))
+            if (Physics.Raycast(transform.parent.position, transform.localPosition.normalized, out hit, m_distance) &&
+                !hit.collider.gameObject.CompareTag("Player"))
             {
-                if (m_distance > 1.0f)
-                {
-                    transform.position = hit.point;
-                    transform.Translate(transform.forward * Time.deltaTime);
-                }
+                m_offset += (transform.forward * (Time.deltaTime * 5));
             }
-            else
-            {
-                if (m_distance < 4.0f)
-                {
-                    transform.Translate(-transform.forward * Time.deltaTime);
-                }
-                else
-                {
-                    transform.Translate(transform.forward * Time.deltaTime);
-                }
-            }
-            m_distance = Vector3.Distance(transform.parent.position, transform.localPosition);
-            transform.Translate(m_currentCoordinates.normalized * (Time.deltaTime * cameraSpeed));
-            transform.LookAt(player.position);
+            m_offset = Quaternion.AngleAxis(m_currentCoordinates.normalized.x * cameraSpeed * Time.deltaTime, Vector3.up) *
+                       Quaternion.AngleAxis(m_currentCoordinates.normalized.y * cameraSpeed * Time.deltaTime, Vector3.right) * m_offset;
         }
+        if (m_distance < 4.0f)
+        {
+            m_offset += (-transform.forward * (Time.deltaTime));
+        }
+        else
+        {
+            m_offset += (transform.forward * (Time.deltaTime));
+        }
+        m_distance = Vector3.Distance(transform.parent.position, transform.position);
+        transform.position = player.position + m_offset;
+        transform.LookAt(player);
     }
 
     private void OnCamera(InputValue value)
