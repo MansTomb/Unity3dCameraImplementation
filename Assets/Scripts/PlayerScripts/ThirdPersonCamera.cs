@@ -1,9 +1,6 @@
 using System;
-using System.Numerics;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 using Quaternion = UnityEngine.Quaternion;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
@@ -15,17 +12,19 @@ public class ThirdPersonCamera : MonoBehaviour
 
     private Vector3 m_currentCoordinates = Vector3.zero;
     private Vector3 m_offset;
-    private float m_distance = 1.0f;
 
     private float m_offsetX = 0f;
     private float m_offsetY = 1f;
     private float m_offsetZ = -3f;
 
+    private float m_mouseX, m_mouseY;
+
+    private float m_distance;
+
     private void Awake()
     {
         m_offset = new Vector3(player.position.x + m_offsetX, player.position.y + m_offsetY, player.position.z + m_offsetZ);
-        transform.rotation = Quaternion.Euler(15, 0, 0);
-        m_distance = Vector3.Distance(transform.parent.position, transform.position);
+        m_distance = transform.localPosition.magnitude;
     }
 
     private void Update()
@@ -35,30 +34,23 @@ public class ThirdPersonCamera : MonoBehaviour
 
     private void CameraControl()
     {
-        if (m_currentCoordinates != Vector3.zero)
+        m_mouseX += m_currentCoordinates.x * cameraSpeed;
+        m_mouseY -= m_currentCoordinates.y * cameraSpeed;
+        m_mouseY = Mathf.Clamp(m_mouseY, -50, 35);
+        RaycastHit hit;
+        
+        if (Physics.Raycast(transform.parent.position, transform.position - player.position, out hit) &&
+            !hit.collider.gameObject.CompareTag("Player"))
         {
-            RaycastHit hit;
-            
-            Debug.DrawRay(transform.parent.position, transform.localPosition.normalized, Color.blue);
-            if (Physics.Raycast(transform.parent.position, transform.localPosition.normalized, out hit, m_distance) &&
-                !hit.collider.gameObject.CompareTag("Player"))
-            {
-                m_offset += (transform.forward * (Time.deltaTime * 5));
-            }
-            m_offset = Quaternion.AngleAxis(m_currentCoordinates.normalized.x * cameraSpeed * Time.deltaTime, Vector3.up) *
-                       Quaternion.AngleAxis(m_currentCoordinates.normalized.y * cameraSpeed * Time.deltaTime, Vector3.right) * m_offset;
-        }
-        if (m_distance < 4.0f)
-        {
-            m_offset += (-transform.forward * (Time.deltaTime));
+            m_distance = Mathf.Clamp(hit.distance, 1.0f, 3.0f);
         }
         else
         {
-            m_offset += (transform.forward * (Time.deltaTime));
+            m_distance = 3.0f;
         }
-        m_distance = Vector3.Distance(transform.parent.position, transform.position);
-        transform.position = player.position + m_offset;
         transform.LookAt(player);
+        transform.localPosition = Vector3.Lerp(transform.localPosition, m_offset.normalized * m_distance, Time.deltaTime * 2);
+        player.rotation = Quaternion.Euler(m_mouseY, m_mouseX, 0);
     }
 
     private void OnCamera(InputValue value)
