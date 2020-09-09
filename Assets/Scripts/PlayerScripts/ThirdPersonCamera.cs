@@ -8,22 +8,20 @@ using Vector3 = UnityEngine.Vector3;
 public class ThirdPersonCamera : MonoBehaviour
 {
     public Transform player;
-    public float cameraSpeed = 3;
+    public float cameraSpeed = 3f;
+    public float distance = 3f;
 
     private Vector3 m_currentCoordinates = Vector3.zero;
     private Vector3 m_offset;
 
-    private float m_offsetX = 0f;
-    private float m_offsetY = 1f;
-    private float m_offsetZ = -3f;
-
-    private float m_mouseX, m_mouseY;
+    private float m_mouseX;
+    private float m_mouseY;
 
     private float m_distance;
 
     private void Awake()
     {
-        m_offset = new Vector3(player.position.x + m_offsetX, player.position.y + m_offsetY, player.position.z + m_offsetZ);
+        m_offset = transform.localPosition.normalized;
         m_distance = transform.localPosition.magnitude;
     }
 
@@ -42,14 +40,14 @@ public class ThirdPersonCamera : MonoBehaviour
         if (Physics.Raycast(transform.parent.position, transform.position - player.position, out hit) &&
             !hit.collider.gameObject.CompareTag("Player"))
         {
-            m_distance = Mathf.Clamp(hit.distance, 1.0f, 3.0f);
+            m_distance = Mathf.Clamp(hit.distance, 1.0f, distance);
         }
         else
         {
-            m_distance = 3.0f;
+            m_distance = distance;
         }
         transform.LookAt(player);
-        transform.localPosition = Vector3.Lerp(transform.localPosition, m_offset.normalized * m_distance, Time.deltaTime * 2);
+        transform.localPosition = Vector3.Lerp(transform.localPosition, m_offset * m_distance, Time.deltaTime * 2);
         player.rotation = Quaternion.Euler(m_mouseY, m_mouseX, 0);
     }
 
